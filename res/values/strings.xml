@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="app_name">AppShare</string>
+    <string name="share_dlg_title">分享到</string>
+    <string name="share_wx_friends">微信好友</string>
+    <string name="share_wx_circle_friends">微信朋友圈</string>
+    <string name="share_more">更多</string>
+    <string name="share_qq">QQ好友</string>
+    <string name="not_installed_tip">您未安装此应用！</string>
+    <string name="errcode_success">发送成功</string>
+    <string name="errcode_failure">发送失败</string>
+    <string name="errcode_cancel">发送取消</string>
+    <string name="errcode_deny">发送被拒绝</string>
+    <string name="errcode_unknown">发送返回</string>
+</resources>

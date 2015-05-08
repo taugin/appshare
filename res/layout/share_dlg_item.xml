@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_text"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:drawablePadding="9dp"
+    android:drawableTop="@drawable/share_wx"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
+    android:gravity="center_horizontal"
+    android:text="@string/share_wx_friends"
+    android:textColor="#FF989898"
+    android:textSize="12dp" />
