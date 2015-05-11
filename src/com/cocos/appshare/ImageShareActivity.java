@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class ImageShareActivity extends Activity implements OnClickListener {
 
     private static final int ID_PYQ = 0x10000001;
     private String mFileName = null;
+    private ImageView mShareView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +45,11 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         }
         RelativeLayout layout = new RelativeLayout(this);
         layout.setBackgroundResource(android.R.color.white);
-        ImageView imageView = new ImageView(this);
-        imageView.setScaleType(ScaleType.CENTER_INSIDE);
-        Bitmap bitmap = BitmapFactory.decodeFile(mFileName);
-        imageView.setImageBitmap(bitmap);
-        layout.addView(imageView);
+        mShareView = new ImageView(this);
+        mShareView.setScaleType(ScaleType.CENTER_INSIDE);
+        Bitmap bitmap = createShareBitmap(mFileName);
+        mShareView.setImageBitmap(bitmap);
+        layout.addView(mShareView);
 
         ImageView shareImg = new ImageView(this);
         shareImg.setOnClickListener(this);
@@ -66,10 +68,10 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         int marginV = (int) (metrics.heightPixels * 0.02);
         int paddingH = (int) (metrics.widthPixels * 0.03);
         int paddingV = (int) (metrics.heightPixels * 0.03);
-        layout.setPadding(paddingH, paddingV, paddingH, paddingV);
+        // layout.setPadding(paddingH, paddingV, paddingH, paddingV);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(-1, -1);
-        params.leftMargin = params.rightMargin = marginH;
-        params.topMargin = params.bottomMargin = marginV;
+        // params.leftMargin = params.rightMargin = marginH;
+        // params.topMargin = params.bottomMargin = marginV;
         setContentView(layout, params);
 
         try {
@@ -82,15 +84,43 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         }
     }
 
+    private Bitmap createShareBitmap(String fileName) {
+        Bitmap bitmap = BitmapFactory.decodeFile(fileName).copy(Bitmap.Config.ARGB_8888, true);
+        Bitmap extra = BitmapFactory.decodeFile("/sdcard/erweima.jpg");
+        if (bitmap != null) {
+            Canvas canvas = new Canvas(bitmap);
+            if (extra != null) {
+                int bh = bitmap.getHeight();
+                int eh = extra.getHeight();
+                canvas.drawBitmap(extra, 0, bh - eh, null);
+            }
+        }
+        return bitmap;
+    }
+
     @Override
     public void onClick(View v) {
         finish();
         wxShare();
     }
 
+    private Bitmap getImageBitmap() {
+        if (mShareView != null) {
+            mShareView.setDrawingCacheEnabled(true);
+            Bitmap srcBmp = mShareView.getDrawingCache();
+            Bitmap dstBmp = Bitmap.createBitmap(srcBmp);
+            mShareView.setDrawingCacheEnabled(false);
+            return dstBmp;
+        }
+        return null;
+    }
+
     private void wxShare() {
         ShareInfo shareInfo = new ShareInfo();
-        Bitmap bitmap = BitmapFactory.decodeFile(mFileName);
+        Bitmap bitmap = getImageBitmap();
+        if (bitmap == null) {
+            return ;
+        }
         shareInfo.mBitmap = new WeakReference<Bitmap>(bitmap);
         shareInfo.mPicture = true;
         WXShareHelper mWXShare = new WXShareHelper(this, shareInfo);

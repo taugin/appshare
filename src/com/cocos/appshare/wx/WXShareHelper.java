@@ -171,6 +171,7 @@ public class WXShareHelper {
         }
         int byteCount = w * h * bytePerPixel;
         if (byteCount > 10 * 1024 * 1024) {
+            Log.d(Log.TAG, "bitmap byte greater than 10M");
             double scalePow = 10 * 1024 * 1024 / (double) byteCount;
             float scale = (float) Math.sqrt(scalePow);
             int newW = (int) (w * scale);
@@ -196,6 +197,7 @@ public class WXShareHelper {
         }
         int byteCount = w * h * bytePerPixel;
         if (byteCount > 320 * 1024) {
+            Log.d(Log.TAG, "bitmap byte greater than 32K");
             double scalePow = 320 * 1024 / (double) byteCount;
             float scale = (float) Math.sqrt(scalePow);
             int newW = (int) (w * scale);
