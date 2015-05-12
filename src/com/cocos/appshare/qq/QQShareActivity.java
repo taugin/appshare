@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.cocos.appshare.OnShareResultListener;
 import com.cocos.appshare.R;

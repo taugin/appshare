@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -16,18 +14,19 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout;
 
 import com.cocos.appshare.info.ShareInfo;
+import com.cocos.appshare.util.ImageCreator;
 import com.cocos.appshare.util.Log;
 import com.cocos.appshare.wx.WXShareHelper;
 
 public class ImageShareActivity extends Activity implements OnClickListener {
 
     private static final int ID_PYQ = 0x10000001;
-    private String mFileName = null;
     private ImageView mShareView = null;
 
     @Override
@@ -35,11 +34,12 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
+        String scoreImg = null;
         if (intent != null) {
-            mFileName = intent.getStringExtra("share_image");
+            scoreImg = intent.getStringExtra("score_image");
         }
-        Log.d(Log.TAG, "mFileName : " + mFileName);
-        if (TextUtils.isEmpty(mFileName)) {
+        Log.d(Log.TAG, "scoreImg : " + scoreImg);
+        if (TextUtils.isEmpty(scoreImg)) {
             finish();
             return ;
         }
@@ -47,11 +47,21 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         layout.setBackgroundResource(android.R.color.white);
         mShareView = new ImageView(this);
         mShareView.setScaleType(ScaleType.CENTER_INSIDE);
-        Bitmap bitmap = createShareBitmap(mFileName);
+        ImageCreator creator = new ImageCreator(this);
+        String bgImg = "share_bg.png";
+        String qrCodeImg = "erweima.jpg";
+        String logoImg = "eyebrow.png";
+        scoreImg = "Screenshot.png";
+        Bitmap bitmap = creator.createWxShareWithQRcode(bgImg, scoreImg, qrCodeImg, logoImg);
+        Log.d(Log.TAG, "bitmap : " + bitmap);
+        if (bitmap == null) {
+            finish();
+            return ;
+        }
         mShareView.setImageBitmap(bitmap);
         layout.addView(mShareView);
 
-        ImageView shareImg = new ImageView(this);
+        ImageButton shareImg = new ImageButton(this);
         shareImg.setOnClickListener(this);
         shareImg.setId(ID_PYQ);
         shareImg.setImageResource(R.drawable.share_pyq);
@@ -59,6 +69,8 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         int w = dp2px(this, 48);
         int h = dp2px(this, 48);
         RelativeLayout.LayoutParams lp1 = new RelativeLayout.LayoutParams(w, h);
+        lp1.rightMargin = dp2px(this, 5);
+        lp1.bottomMargin = dp2px(this, 5);
         lp1.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         lp1.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         layout.addView(shareImg, lp1);
@@ -82,20 +94,6 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         }catch(Exception e) {
             Log.d(Log.TAG, "error : " + e);
         }
-    }
-
-    private Bitmap createShareBitmap(String fileName) {
-        Bitmap bitmap = BitmapFactory.decodeFile(fileName).copy(Bitmap.Config.ARGB_8888, true);
-        Bitmap extra = BitmapFactory.decodeFile("/sdcard/erweima.jpg");
-        if (bitmap != null) {
-            Canvas canvas = new Canvas(bitmap);
-            if (extra != null) {
-                int bh = bitmap.getHeight();
-                int eh = extra.getHeight();
-                canvas.drawBitmap(extra, 0, bh - eh, null);
-            }
-        }
-        return bitmap;
     }
 
     @Override
