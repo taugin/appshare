@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -48,11 +47,8 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         mShareView = new ImageView(this);
         mShareView.setScaleType(ScaleType.CENTER_INSIDE);
         ImageCreator creator = new ImageCreator(this);
-        String bgImg = "share_bg.png";
         String qrCodeImg = "erweima.jpg";
-        String logoImg = "eyebrow.png";
-        scoreImg = "Screenshot.png";
-        Bitmap bitmap = creator.createWxShareWithQRcode(bgImg, scoreImg, qrCodeImg, logoImg);
+        Bitmap bitmap = creator.createWxShareWithQRcode(scoreImg, qrCodeImg);
         Log.d(Log.TAG, "bitmap : " + bitmap);
         if (bitmap == null) {
             finish();
@@ -87,9 +83,7 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         setContentView(layout, params);
 
         try {
-            MediaPlayer mediaPlay = new MediaPlayer();
-            mediaPlay.setDataSource(this, Uri.parse("file:///system/media/audio/ui/camera_click.ogg"));
-            mediaPlay.prepare();
+            MediaPlayer mediaPlay = MediaPlayer.create(this, R.raw.camera_click);
             mediaPlay.start();
         }catch(Exception e) {
             Log.d(Log.TAG, "error : " + e);

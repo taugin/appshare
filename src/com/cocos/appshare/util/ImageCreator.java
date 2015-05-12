@@ -20,6 +20,12 @@ public class ImageCreator {
         mContext = context;
     }
 
+    public Bitmap createWxShareWithQRcode(String scoreImg, String qrCodeImg) {
+        String bgImg = "share_bg.png";
+        String logoImg = "eyebrow.png";
+        return createWxShareWithQRcode(bgImg, scoreImg, qrCodeImg, logoImg);
+    }
+
     public Bitmap createWxShareWithQRcode(String bgImg, String scoreImg, String qrCodeImg, String logoImg) {
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         Bitmap canvasBmp = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels, Bitmap.Config.ARGB_8888);
@@ -36,9 +42,6 @@ public class ImageCreator {
             is = mContext.getAssets().open(bgImg);
             bgBmp = BitmapFactory.decodeStream(is);
             is.close();
-            is = mContext.getAssets().open(scoreImg);
-            scoreBmp = BitmapFactory.decodeStream(is);
-            is.close();
             is = mContext.getAssets().open(qrCodeImg);
             qrCodeBmp = BitmapFactory.decodeStream(is);
             is.close();
@@ -48,6 +51,8 @@ public class ImageCreator {
         }catch(Exception e) {
             Log.d(Log.TAG, "error : " + e);
         }
+
+        scoreBmp = BitmapFactory.decodeFile(scoreImg);
 
         float margin = dp2px(mContext, 15);
         float dx = 0;
@@ -63,7 +68,8 @@ public class ImageCreator {
         if (logoBmp != null) {
             int logoW = logoBmp.getWidth();
             int logoH = logoBmp.getHeight();
-            logoHeight = Math.min(logoH, metrics.heightPixels / 4);
+            // logoHeight = Math.min(logoH, metrics.heightPixels / 4);
+            logoHeight = metrics.heightPixels / 4;
             float scale = (float) logoHeight / logoH;
             logoW = (int) (scale * logoW);
             dx = (metrics.widthPixels - logoW) / 2;
@@ -81,10 +87,10 @@ public class ImageCreator {
         if (scoreBmp != null) {
             int w = scoreBmp.getWidth();
             int h = scoreBmp.getHeight();
-            int minH = Math.min(h, (metrics.heightPixels - metrics.heightPixels/4));
+            int minH = metrics.heightPixels - metrics.heightPixels/4;
             float scale = (float)minH / h;
-            int minW = (int) (w * scale);
-            dx = (metrics.widthPixels - minW) / 2;
+            int scroreW = (int) (w * scale);
+            dx = (metrics.widthPixels - scroreW) / 2;
             dy = logoHeight + margin;
 
             // Draw Round Rect
@@ -102,11 +108,12 @@ public class ImageCreator {
             if (qrCodeBmp != null) {
                 int ew = qrCodeBmp.getWidth();
                 int eh = qrCodeBmp.getHeight();
-                float qrCodeScale =  scale * 0.5f;
-                minW = (int) (ew * qrCodeScale);
-                minH = (int) (eh * qrCodeScale);
-                dx = (metrics.widthPixels - minW) / 2;
-                dy = metrics.heightPixels - minH - minH / 2;
+                int qrCodeW = (int) ((float)scroreW / 3);
+                int qrCodeH = qrCodeW;
+                float qrCodeScale =  (float)qrCodeW / ew;
+                Log.d(Log.TAG, "qrCodeW : " + qrCodeW);
+                dx = (metrics.widthPixels - qrCodeW) / 2;
+                dy = metrics.heightPixels - qrCodeH - margin;
                 matrix.setScale(qrCodeScale, qrCodeScale);
                 canvas.save();
                 canvas.translate(dx, dy);
@@ -121,13 +128,13 @@ public class ImageCreator {
     }
     
     private void drawRoundRect(Canvas canvas, Paint paint, float dx, float dy, DisplayMetrics metrics, float margin) {
-        float radius = 20;
+        float radius = dp2px(mContext, 15);
         int rw = (int) (metrics.widthPixels - (dx - margin));
         int rh = metrics.heightPixels;
         RectF rect = new RectF(dx - margin, dy, rw, rh + margin);
-        paint.setColor(Color.BLUE);
+        paint.setColor(Color.parseColor("#FF086988"));
         paint.setStyle(Style.STROKE);
-        paint.setStrokeWidth(3);
+        paint.setStrokeWidth(dp2px(mContext, 3));
         canvas.drawRoundRect(rect, radius, radius, paint);
     }
 
