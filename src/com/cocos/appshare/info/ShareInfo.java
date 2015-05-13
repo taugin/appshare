@@ -5,6 +5,7 @@ import java.lang.ref.WeakReference;
 import android.graphics.Bitmap;
 
 public class ShareInfo {
+    public String mWxAppId;
     public boolean mPicture = false;
     public String mImgUrl;
     public String mShareTitle;

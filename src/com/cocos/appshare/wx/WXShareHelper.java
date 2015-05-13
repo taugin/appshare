@@ -36,6 +36,9 @@ public class WXShareHelper {
         mContext = context;
         mShareInfo = shareInfo;
         String appId = APP_ID;
+        if (!TextUtils.isEmpty(shareInfo.mWxAppId)) {
+            appId = shareInfo.mWxAppId;
+        }
         api = WXAPIFactory.createWXAPI(context, appId, true);
         api.registerApp(appId);
     }

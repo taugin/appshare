@@ -75,9 +75,6 @@ public class ShareController {
     }
 
     public boolean allowWxShare(String channel) {
-        if (mShareMap == null) {
-            init();
-        }
         if (mShareMap != null) {
             if (mShareMap.containsKey(channel)) {
                 String wxAppId = mShareMap.get(channel);
@@ -88,11 +85,8 @@ public class ShareController {
         }
         return false;
     }
-    
+
     public String getWxAppId(String channel) {
-        if (mShareMap == null) {
-            init();
-        }
         if (mShareMap != null) {
             if (mShareMap.containsKey(channel)) {
                 return mShareMap.get(channel);
