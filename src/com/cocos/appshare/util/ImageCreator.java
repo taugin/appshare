@@ -1,7 +1,5 @@
 package com.cocos.appshare.util;
 
-import java.io.InputStream;
-
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,46 +35,38 @@ public class ImageCreator {
         mScreenHeight = metrics.heightPixels;
     }
 
-    public Bitmap createWxShareWithQRcodeForHome(String scoreImg, String qrText) {
+    public Bitmap createWxShareWithQRcodeForHome(String shotImg, String qrText) {
         String bgImg = "share_bg.png";
         String logoImg = "share_logo.png";
         String footerImg = "share_footer.png";
-        return createWxShareWithQRcodeForHome(bgImg, scoreImg, qrText, logoImg, footerImg);
+        return createWxShareWithQRcodeForHome(bgImg, shotImg, qrText, logoImg, footerImg);
     }
 
-    public Bitmap createWxShareWithQRcodeForHome(String bgImg, String scoreImg, String qrText, String logoImg, String footerImg) {
+    public Bitmap createWxShareWithQRcodeForHome(String bgImg, String screenshotImg, String qrText, String logoImg, String footerImg) {
         Bitmap canvasBmp = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(canvasBmp);
         Paint paint = new Paint();
         //Xfermode oldXform = paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
         //paint.setAlpha(255);
         Bitmap bgBmp = null;
-        Bitmap scoreBmp = null;
-        Bitmap qrCodeBmp = null;
+        Bitmap shotImg = null;
         Bitmap logoBmp = null;
         Bitmap footerBmp = null;
-        InputStream is = null;
         try {
-            is = mContext.getAssets().open(bgImg);
-            bgBmp = BitmapFactory.decodeStream(is);
-            is.close();
-            is = mContext.getAssets().open(logoImg);
-            logoBmp = BitmapFactory.decodeStream(is);
-            is.close();
-            is = mContext.getAssets().open(footerImg);
-            footerBmp = BitmapFactory.decodeStream(is);
-            is.close();
+            bgBmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.share_bg);
+            logoBmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.share_logo);
+            footerBmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.share_footer);
         }catch(Exception e) {
             Log.d(Log.TAG, "error : " + e);
         }
 
-        scoreBmp = BitmapFactory.decodeFile(scoreImg);
+        shotImg = BitmapFactory.decodeFile(screenshotImg);
 
         drawBackground(canvas, bgBmp);
 
         drawHeader(canvas, logoBmp);
 
-        drawBody(canvas, scoreBmp, paint);
+        drawBody(canvas, shotImg, paint);
 
         drawRoundRect(canvas);
 
@@ -114,10 +104,10 @@ public class ImageCreator {
         }
     }
 
-    private void drawBody(Canvas canvas, Bitmap scoreBmp, Paint paint) {
-        if (scoreBmp != null) {
-            int w = scoreBmp.getWidth();
-            int h = scoreBmp.getHeight();
+    private void drawBody(Canvas canvas, Bitmap shotImg, Paint paint) {
+        if (shotImg != null) {
+            int w = shotImg.getWidth();
+            int h = shotImg.getHeight();
             int scoreH = mScreenHeight - 2 * mScreenHeight/FACTION - 2 * (int)margin;
             float scale = (float)scoreH / h;
             int scoreW = (int) (w * scale);
@@ -129,10 +119,10 @@ public class ImageCreator {
             matrix.setScale(scale, scale);
             canvas.save();
             canvas.translate(left, top);
-            canvas.drawBitmap(scoreBmp, matrix, paint);
+            canvas.drawBitmap(shotImg, matrix, paint);
             canvas.restore();
-            scoreBmp.recycle();
-            scoreBmp = null;
+            shotImg.recycle();
+            shotImg = null;
         }
     }
 
