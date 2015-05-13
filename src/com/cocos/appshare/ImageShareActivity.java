@@ -34,8 +34,10 @@ public class ImageShareActivity extends Activity implements OnClickListener {
 
         Intent intent = getIntent();
         String scoreImg = null;
+        String qrCodeImg = null;
         if (intent != null) {
             scoreImg = intent.getStringExtra("score_image");
+            qrCodeImg = intent.getStringExtra("qrcode_image");
         }
         Log.d(Log.TAG, "scoreImg : " + scoreImg);
         if (TextUtils.isEmpty(scoreImg)) {
@@ -47,7 +49,6 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         mShareView = new ImageView(this);
         mShareView.setScaleType(ScaleType.CENTER_INSIDE);
         ImageCreator creator = new ImageCreator(this);
-        String qrCodeImg = "erweima.jpg";
         Bitmap bitmap = creator.createWxShareWithQRcodeForHome(scoreImg, qrCodeImg);
         Log.d(Log.TAG, "bitmap : " + bitmap);
         if (bitmap == null) {
