@@ -37,14 +37,14 @@ public class ImageCreator {
         mScreenHeight = metrics.heightPixels;
     }
 
-    public Bitmap createWxShareWithQRcodeForHome(String scoreImg, String qrCodeImg) {
+    public Bitmap createWxShareWithQRcodeForHome(String scoreImg, String qrText) {
         String bgImg = "share_bg.png";
         String logoImg = "share_logo.png";
         String footerImg = "share_footer.png";
-        return createWxShareWithQRcodeForHome(bgImg, scoreImg, qrCodeImg, logoImg, footerImg);
+        return createWxShareWithQRcodeForHome(bgImg, scoreImg, qrText, logoImg, footerImg);
     }
 
-    public Bitmap createWxShareWithQRcodeForHome(String bgImg, String scoreImg, String qrCodeImg, String logoImg, String footerImg) {
+    public Bitmap createWxShareWithQRcodeForHome(String bgImg, String scoreImg, String qrText, String logoImg, String footerImg) {
         Bitmap canvasBmp = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(canvasBmp);
         Paint paint = new Paint();
@@ -59,9 +59,6 @@ public class ImageCreator {
         try {
             is = mContext.getAssets().open(bgImg);
             bgBmp = BitmapFactory.decodeStream(is);
-            is.close();
-            is = mContext.getAssets().open(qrCodeImg);
-            qrCodeBmp = BitmapFactory.decodeStream(is);
             is.close();
             is = mContext.getAssets().open(logoImg);
             logoBmp = BitmapFactory.decodeStream(is);
@@ -83,7 +80,7 @@ public class ImageCreator {
 
         drawRoundRect(canvas);
 
-        drawRQCodeBmpLeft(canvas, qrCodeBmp);
+        drawRQCodeBmp(canvas, qrText);
 
         drawFooter(canvas, footerBmp);
         return canvasBmp;
@@ -152,6 +149,36 @@ public class ImageCreator {
         paint.setStrokeWidth(dp2px(mContext, 3));
         paint.setAntiAlias(true);
         canvas.drawRoundRect(mRoundRect, radius, radius, paint);
+    }
+
+    private void drawRQCodeBmp(Canvas canvas, String qrText) {
+        QRCodeHelper helper = new QRCodeHelper(mContext);
+        int qrCodeW = (int)mScoreRect.width() / 2;
+        int qrCodeH = (int)mScoreRect.width() / 2;
+        Bitmap qrCodeBmp = helper.createImage(qrText, qrCodeW, qrCodeH);
+        if (qrCodeBmp != null) {
+            mQRCodeRect = new RectF();
+            mQRCodeRect.left = mScoreRect.left + margin;
+            mQRCodeRect.top = mScoreRect.bottom - qrCodeH - margin;
+            mQRCodeRect.right = mScoreRect.left + qrCodeW;
+            mQRCodeRect.bottom = mScoreRect.bottom - margin;
+            float dx = mQRCodeRect.left;
+            float dy = mQRCodeRect.top;
+            canvas.save();
+            canvas.translate(dx, dy);
+            canvas.drawBitmap(qrCodeBmp, 0, 0, null);
+            canvas.restore();
+            qrCodeBmp.recycle();
+            qrCodeBmp = null;
+            float x = mScoreRect.left + margin;
+            float y = mScoreRect.bottom - dp2px(mContext, 3);
+            Paint paint = new Paint();
+            paint.setTextSize(margin - dp2px(mContext, 4));
+            paint.setColor(Color.WHITE);
+            paint.setAntiAlias(true);
+            String text = mContext.getResources().getString(R.string.longpress_scan);
+            canvas.drawText(text, x, y, paint);
+        }
     }
 
     private void drawRQCodeBmpLeft(Canvas canvas, Bitmap qrCodeBmp) {
