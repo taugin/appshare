@@ -152,7 +152,7 @@ public class ImageCreator {
             float x = dx;
             float y = metrics.heightPixels - dp2px(mContext, 2);
             Paint paint = new Paint();
-            paint.setTextSize(margin - dp2px(mContext, 2));
+            paint.setTextSize(margin - dp2px(mContext, 3));
             paint.setColor(Color.WHITE);
             paint.setAntiAlias(true);
             String text = mContext.getResources().getString(R.string.longpress_scan);

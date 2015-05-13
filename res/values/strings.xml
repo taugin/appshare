@@ -12,5 +12,5 @@
     <string name="errcode_cancel">发送取消</string>
     <string name="errcode_deny">发送被拒绝</string>
     <string name="errcode_unknown">发送返回</string>
-    <string name="longpress_scan">长按图片识别二维码</string>
+    <string name="longpress_scan">长按扫描二维码下载游戏</string>
 </resources>

@@ -23,7 +23,7 @@ import com.cocos.appshare.util.ImageCreator;
 import com.cocos.appshare.util.Log;
 import com.cocos.appshare.wx.WXShareHelper;
 
-public class ImageShareActivity extends Activity implements OnClickListener {
+public class SharePreview extends Activity implements OnClickListener {
 
     private static final int ID_PYQ = 0x10000001;
     private ImageView mShareView = null;
