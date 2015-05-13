@@ -96,7 +96,7 @@ public class ImageCreator {
             dy = logoHeight + margin;
 
             // Draw Round Rect
-            drawRoundRect(canvas, paint, dx, logoHeight, metrics, margin);
+            drawRoundRect(canvas, dx, logoHeight, metrics, margin);
 
             Matrix matrix = new Matrix();
             matrix.setScale(scale, scale);
@@ -154,16 +154,18 @@ public class ImageCreator {
             Paint paint = new Paint();
             paint.setTextSize(margin - dp2px(mContext, 2));
             paint.setColor(Color.WHITE);
+            paint.setAntiAlias(true);
             String text = mContext.getResources().getString(R.string.longpress_scan);
             canvas.drawText(text, x, y, paint);
         }
     }
 
-    private void drawRoundRect(Canvas canvas, Paint paint, float dx, float dy, DisplayMetrics metrics, float margin) {
+    private void drawRoundRect(Canvas canvas, float dx, float dy, DisplayMetrics metrics, float margin) {
         float radius = dp2px(mContext, 15);
         int rw = (int) (metrics.widthPixels - (dx - margin));
         int rh = metrics.heightPixels;
         RectF rect = new RectF(dx - margin, dy, rw, rh + margin);
+        Paint paint = new Paint();
         paint.setColor(Color.parseColor("#FF086988"));
         paint.setStyle(Style.STROKE);
         paint.setStrokeWidth(dp2px(mContext, 3));
