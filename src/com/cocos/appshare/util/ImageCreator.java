@@ -167,6 +167,7 @@ public class ImageCreator {
         paint.setColor(Color.parseColor("#FF086988"));
         paint.setStyle(Style.STROKE);
         paint.setStrokeWidth(dp2px(mContext, 3));
+        paint.setAntiAlias(true);
         canvas.drawRoundRect(rect, radius, radius, paint);
     }
 
