@@ -2,6 +2,8 @@ package com.cocos.appshare.util;
 
 import java.io.InputStream;
 
+import com.cocos.appshare.R;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -89,8 +91,8 @@ public class ImageCreator {
             int h = scoreBmp.getHeight();
             int minH = metrics.heightPixels - metrics.heightPixels/4;
             float scale = (float)minH / h;
-            int scroreW = (int) (w * scale);
-            dx = (metrics.widthPixels - scroreW) / 2;
+            int scoreW = (int) (w * scale);
+            dx = (metrics.widthPixels - scoreW) / 2;
             dy = logoHeight + margin;
 
             // Draw Round Rect
@@ -104,29 +106,59 @@ public class ImageCreator {
             canvas.restore();
             scoreBmp.recycle();
             scoreBmp = null;
-
-            if (qrCodeBmp != null) {
-                int ew = qrCodeBmp.getWidth();
-                int eh = qrCodeBmp.getHeight();
-                int qrCodeW = (int) ((float)scroreW / 3);
-                int qrCodeH = qrCodeW;
-                float qrCodeScale =  (float)qrCodeW / ew;
-                Log.d(Log.TAG, "qrCodeW : " + qrCodeW);
-                dx = (metrics.widthPixels - qrCodeW) / 2;
-                dy = metrics.heightPixels - qrCodeH - margin;
-                matrix.setScale(qrCodeScale, qrCodeScale);
-                canvas.save();
-                canvas.translate(dx, dy);
-                canvas.drawBitmap(qrCodeBmp, matrix, null);
-                canvas.restore();
-                qrCodeBmp.recycle();
-                qrCodeBmp = null;
-            }
+            drawRQCodeBmpLeft(canvas, qrCodeBmp, metrics, scoreW, margin);
         }
 
         return canvasBmp;
     }
-    
+
+    private void drawRQCodeBmpCenter(Canvas canvas, Bitmap qrCodeBmp, DisplayMetrics metrics, int scoreW, float margin) {
+        if (qrCodeBmp != null) {
+            int ew = qrCodeBmp.getWidth();
+            int qrCodeW = (int) ((float)scoreW / 3);
+            int qrCodeH = qrCodeW;
+            float qrCodeScale =  (float)qrCodeW / ew;
+            Log.d(Log.TAG, "qrCodeW : " + qrCodeW);
+            float dx = (metrics.widthPixels - qrCodeW) / 2;
+            float dy = metrics.heightPixels - qrCodeH - margin;
+            Matrix matrix = new Matrix();
+            matrix.setScale(qrCodeScale, qrCodeScale);
+            canvas.save();
+            canvas.translate(dx, dy);
+            canvas.drawBitmap(qrCodeBmp, matrix, null);
+            canvas.restore();
+            qrCodeBmp.recycle();
+            qrCodeBmp = null;
+        }
+    }
+
+    private void drawRQCodeBmpLeft(Canvas canvas, Bitmap qrCodeBmp, DisplayMetrics metrics, int scoreW, float margin) {
+        if (qrCodeBmp != null) {
+            int ew = qrCodeBmp.getWidth();
+            int qrCodeW = (int) ((float)scoreW / 2);
+            int qrCodeH = qrCodeW;
+            float qrCodeScale =  (float)qrCodeW / ew;
+            Log.d(Log.TAG, "qrCodeW : " + qrCodeW);
+            float dx = (metrics.widthPixels - scoreW) / 2;
+            float dy = metrics.heightPixels - qrCodeH - margin;
+            Matrix matrix = new Matrix();
+            matrix.setScale(qrCodeScale, qrCodeScale);
+            canvas.save();
+            canvas.translate(dx, dy);
+            canvas.drawBitmap(qrCodeBmp, matrix, null);
+            canvas.restore();
+            qrCodeBmp.recycle();
+            qrCodeBmp = null;
+            float x = dx;
+            float y = metrics.heightPixels - dp2px(mContext, 2);
+            Paint paint = new Paint();
+            paint.setTextSize(margin - dp2px(mContext, 2));
+            paint.setColor(Color.WHITE);
+            String text = mContext.getResources().getString(R.string.longpress_scan);
+            canvas.drawText(text, x, y, paint);
+        }
+    }
+
     private void drawRoundRect(Canvas canvas, Paint paint, float dx, float dy, DisplayMetrics metrics, float margin) {
         float radius = dp2px(mContext, 15);
         int rw = (int) (metrics.widthPixels - (dx - margin));

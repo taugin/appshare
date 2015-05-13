@@ -28,7 +28,6 @@ public class WXShareHelper {
     private static final int WXSceneTimeline = 1;
 
     private static final String APP_ID = "wx8b2508265fe571c6";
-    private static final String APP_ID_DX = "wx8cbde386754aba50";
     private IWXAPI api;
     private ShareInfo mShareInfo;
     private Context mContext;
@@ -37,9 +36,6 @@ public class WXShareHelper {
         mContext = context;
         mShareInfo = shareInfo;
         String appId = APP_ID;
-        if ("com.bhvr.homejam.egame".equals(context.getPackageName())) {
-            appId = APP_ID_DX;
-        }
         api = WXAPIFactory.createWXAPI(context, appId, true);
         api.registerApp(appId);
     }
