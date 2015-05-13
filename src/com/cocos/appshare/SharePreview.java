@@ -40,6 +40,7 @@ public class SharePreview extends Activity implements OnClickListener {
             qrCodeImg = intent.getStringExtra("qrcode_image");
         }
         Log.d(Log.TAG, "scoreImg : " + scoreImg);
+        Log.d(Log.TAG, "qrCodeImg : " + qrCodeImg);
         if (TextUtils.isEmpty(scoreImg)) {
             finish();
             return ;
