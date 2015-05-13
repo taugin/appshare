@@ -20,13 +20,13 @@ public class ImageCreator {
         mContext = context;
     }
 
-    public Bitmap createWxShareWithQRcode(String scoreImg, String qrCodeImg) {
+    public Bitmap createWxShareWithQRcodeForHome(String scoreImg, String qrCodeImg) {
         String bgImg = "share_bg.png";
         String logoImg = "eyebrow.png";
-        return createWxShareWithQRcode(bgImg, scoreImg, qrCodeImg, logoImg);
+        return createWxShareWithQRcodeForHome(bgImg, scoreImg, qrCodeImg, logoImg);
     }
 
-    public Bitmap createWxShareWithQRcode(String bgImg, String scoreImg, String qrCodeImg, String logoImg) {
+    public Bitmap createWxShareWithQRcodeForHome(String bgImg, String scoreImg, String qrCodeImg, String logoImg) {
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         Bitmap canvasBmp = Bitmap.createBitmap(metrics.widthPixels, metrics.heightPixels, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(canvasBmp);

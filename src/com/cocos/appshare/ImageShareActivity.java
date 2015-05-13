@@ -48,7 +48,7 @@ public class ImageShareActivity extends Activity implements OnClickListener {
         mShareView.setScaleType(ScaleType.CENTER_INSIDE);
         ImageCreator creator = new ImageCreator(this);
         String qrCodeImg = "erweima.jpg";
-        Bitmap bitmap = creator.createWxShareWithQRcode(scoreImg, qrCodeImg);
+        Bitmap bitmap = creator.createWxShareWithQRcodeForHome(scoreImg, qrCodeImg);
         Log.d(Log.TAG, "bitmap : " + bitmap);
         if (bitmap == null) {
             finish();
