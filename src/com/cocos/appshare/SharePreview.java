@@ -21,12 +21,10 @@ import android.widget.RelativeLayout;
 import com.cocos.appshare.info.ShareInfo;
 import com.cocos.appshare.util.ImageCreator;
 import com.cocos.appshare.util.Log;
+import com.cocos.appshare.util.ShareConstant;
 import com.cocos.appshare.wx.WXShareHelper;
 
 public class SharePreview extends Activity implements OnClickListener {
-
-    public static final String SHOT_IMAGE = "shot_image";
-    public static final String QRCODE_TEXT = "qrcode_text";
 
     private static final int ID_PYQ = 0x10000001;
     private ImageView mShareView = null;
@@ -39,8 +37,8 @@ public class SharePreview extends Activity implements OnClickListener {
         String scoreImg = null;
         String qrCodeText = null;
         if (intent != null) {
-            scoreImg = intent.getStringExtra(SHOT_IMAGE);
-            qrCodeText = intent.getStringExtra(QRCODE_TEXT);
+            scoreImg = intent.getStringExtra(ShareConstant.SHOT_IMAGE);
+            qrCodeText = intent.getStringExtra(ShareConstant.QRCODE_TEXT);
         }
         Log.d(Log.TAG, "scoreImg : " + scoreImg);
         Log.d(Log.TAG, "qrCodeImg : " + qrCodeText);
