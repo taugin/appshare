@@ -1,7 +1,10 @@
 package com.cocos.appshare.util;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,7 +27,7 @@ public class ImageCreator {
     private int mScreenHeight = 0;
 
     private RectF mHeaderRect;
-    private RectF mScoreRect;
+    private RectF mShotRect;
     private RectF mRoundRect;
     private RectF mQRCodeRect;
     private RectF mFooterRect;
@@ -57,7 +60,7 @@ public class ImageCreator {
         Bitmap logoBmp = decodeResources(R.drawable.share_logo);
         drawHeader(canvas, logoBmp);
 
-        Bitmap shotImg = BitmapFactory.decodeFile(screenshotImg);
+        Bitmap shotImg = decodeFile(screenshotImg);
         drawBody(canvas, shotImg, paint);
 
         drawRoundRect(canvas);
@@ -101,12 +104,14 @@ public class ImageCreator {
         if (shotImg != null) {
             int w = shotImg.getWidth();
             int h = shotImg.getHeight();
-            int scoreH = mScreenHeight - 2 * mScreenHeight/FACTION - 2 * (int)margin;
-            float scale = (float)scoreH / h;
-            int scoreW = (int) (w * scale);
-            float left = (mScreenWidth - scoreW) / 2;
+            int shotH = mScreenHeight - 2 * mScreenHeight/FACTION - 2 * (int)margin;
+            float scale = (float)shotH / h;
+            // Get min value of ScreenWidth and (w * scale)
+            int shotW = Math.min((int) (w * scale), mScreenWidth - 2 * (int)margin);
+            Log.d(Log.TAG, "showW : " + shotW + " , shotH : " + shotH);
+            float left = (mScreenWidth - shotW) / 2;
             float top = mScreenHeight/FACTION + margin;
-            mScoreRect = new RectF(left, top, left + scoreW, top + scoreH);
+            mShotRect = new RectF(left, top, left + shotW, top + shotH);
             // Draw Round Rect
             Matrix matrix = new Matrix();
             matrix.setScale(scale, scale);
@@ -123,10 +128,10 @@ public class ImageCreator {
     private void drawRoundRect(Canvas canvas) {
         float radius = dp2px(mContext, 15);
         mRoundRect = new RectF();
-        mRoundRect.left = mScoreRect.left - margin;
-        mRoundRect.top = mScoreRect.top - margin;
-        mRoundRect.right = mScoreRect.right + margin;
-        mRoundRect.bottom = mScoreRect.bottom + margin;
+        mRoundRect.left = mShotRect.left - margin;
+        mRoundRect.top = mShotRect.top - margin;
+        mRoundRect.right = mShotRect.right + margin;
+        mRoundRect.bottom = mShotRect.bottom + margin;
         Paint paint = new Paint();
         paint.setColor(Color.parseColor("#FF086988"));
         paint.setStyle(Style.STROKE);
@@ -137,15 +142,15 @@ public class ImageCreator {
 
     private void drawRQCodeBmp(Canvas canvas, String qrText) {
         QRCodeHelper helper = new QRCodeHelper(mContext);
-        int qrCodeW = (int)mScoreRect.width() / 2;
-        int qrCodeH = (int)mScoreRect.width() / 2;
+        int qrCodeW = (int)mShotRect.width() / 2;
+        int qrCodeH = (int)mShotRect.width() / 2;
         Bitmap qrCodeBmp = helper.createImage(qrText, qrCodeW, qrCodeH);
         if (qrCodeBmp != null) {
             mQRCodeRect = new RectF();
-            mQRCodeRect.left = mScoreRect.left + margin;
-            mQRCodeRect.top = mScoreRect.bottom - qrCodeH - margin;
-            mQRCodeRect.right = mScoreRect.left + qrCodeW;
-            mQRCodeRect.bottom = mScoreRect.bottom - margin;
+            mQRCodeRect.left = mShotRect.left + margin;
+            mQRCodeRect.top = mShotRect.bottom - qrCodeH - margin;
+            mQRCodeRect.right = mShotRect.left + qrCodeW;
+            mQRCodeRect.bottom = mShotRect.bottom - margin;
             float dx = mQRCodeRect.left;
             float dy = mQRCodeRect.top;
             canvas.save();
@@ -155,8 +160,8 @@ public class ImageCreator {
             qrCodeBmp.recycle();
             qrCodeBmp = null;
             System.gc();
-            float x = mScoreRect.left + margin;
-            float y = mScoreRect.bottom - dp2px(mContext, 3);
+            float x = mShotRect.left + margin;
+            float y = mShotRect.bottom - dp2px(mContext, 3);
             Paint paint = new Paint();
             paint.setTextSize(margin - dp2px(mContext, 4));
             paint.setColor(Color.WHITE);
@@ -169,15 +174,15 @@ public class ImageCreator {
     private void drawRQCodeBmpLeft(Canvas canvas, Bitmap qrCodeBmp) {
         if (qrCodeBmp != null) {
             int ew = qrCodeBmp.getWidth();
-            int qrCodeW = (int) ((float)mScoreRect.width() / 2);
+            int qrCodeW = (int) ((float)mShotRect.width() / 2);
             int qrCodeH = qrCodeW;
             float qrCodeScale =  (float)qrCodeW / ew;
             Log.d(Log.TAG, "qrCodeW : " + qrCodeW);
             mQRCodeRect = new RectF();
-            mQRCodeRect.left = mScoreRect.left + margin;
-            mQRCodeRect.top = mScoreRect.bottom - qrCodeH - margin;
-            mQRCodeRect.right = mScoreRect.left + qrCodeW;
-            mQRCodeRect.bottom = mScoreRect.bottom - margin;
+            mQRCodeRect.left = mShotRect.left + margin;
+            mQRCodeRect.top = mShotRect.bottom - qrCodeH - margin;
+            mQRCodeRect.right = mShotRect.left + qrCodeW;
+            mQRCodeRect.bottom = mShotRect.bottom - margin;
             float dx = mQRCodeRect.left;
             float dy = mQRCodeRect.top;
 
@@ -190,8 +195,8 @@ public class ImageCreator {
             qrCodeBmp.recycle();
             qrCodeBmp = null;
             System.gc();
-            float x = mScoreRect.left + margin;
-            float y = mScoreRect.bottom - dp2px(mContext, 3);
+            float x = mShotRect.left + margin;
+            float y = mShotRect.bottom - dp2px(mContext, 3);
             Paint paint = new Paint();
             paint.setTextSize(margin - dp2px(mContext, 4));
             paint.setColor(Color.WHITE);
@@ -229,14 +234,65 @@ public class ImageCreator {
     }
 
     private Bitmap decodeResources(int resId) {
+        Bitmap bitmap = null;
+        InputStream is = null;
         try {
-            InputStream is = mContext.getResources().openRawResource(resId);
-            Bitmap bitmap = BitmapFactory.decodeStream(is);
-            is.close();
-            return bitmap;
-        }catch(Exception e) {
+            is = mContext.getResources().openRawResource(resId);
+            bitmap = decodeStream(is, 1);
+        } catch(Exception e) {
             Log.d(Log.TAG, "error : " + e);
+        } catch (OutOfMemoryError e) {
+            Log.d(Log.TAG, "error : " + e);
+            bitmap = decodeStream(is, 2);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    Log.d(Log.TAG, "error : " + e);
+                }
+            }
         }
-        return null;
+        return bitmap;
+    }
+
+    private Bitmap decodeFile(String fileName) {
+        Bitmap bitmap = null;
+        InputStream is = null;
+        try {
+            is = new FileInputStream(fileName);
+            bitmap = decodeStream(is, 1);
+        } catch (Exception e) {
+            Log.d(Log.TAG, "error : " + e);
+        } catch (OutOfMemoryError e) {
+            Log.d(Log.TAG, "error : " + e);
+            bitmap = decodeStream(is, 2);
+        } finally {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    Log.d(Log.TAG, "error : " + e);
+                }
+            }
+        }
+        return bitmap;
+    }
+
+    private Bitmap decodeStream(InputStream is, int simpleSize) {
+        Bitmap bitmap = null;
+        try {
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = false;
+            options.inSampleSize = simpleSize;
+            options.inPreferredConfig = Bitmap.Config.RGB_565;
+            bitmap = BitmapFactory.decodeStream(is, null, options);
+        } catch (Exception e) {
+            Log.d(Log.TAG, "error : " + e);
+        } catch (OutOfMemoryError e) {
+            Log.d(Log.TAG, "error : " + e);
+            bitmap = decodeStream(is, simpleSize << 1);
+        }
+        return bitmap;
     }
 }
