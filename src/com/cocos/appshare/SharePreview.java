@@ -34,15 +34,15 @@ public class SharePreview extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
 
         Intent intent = getIntent();
-        String scoreImg = null;
+        String shotImg = null;
         String qrCodeText = null;
         if (intent != null) {
-            scoreImg = intent.getStringExtra(ShareConstant.SHOT_IMAGE);
+            shotImg = intent.getStringExtra(ShareConstant.SHOT_IMAGE);
             qrCodeText = intent.getStringExtra(ShareConstant.QRCODE_TEXT);
         }
-        Log.d(Log.TAG, "scoreImg : " + scoreImg);
-        Log.d(Log.TAG, "qrCodeImg : " + qrCodeText);
-        if (TextUtils.isEmpty(scoreImg)) {
+        Log.d(Log.TAG, "shotImg : " + shotImg);
+        Log.d(Log.TAG, "qrCodeText : " + qrCodeText);
+        if (TextUtils.isEmpty(shotImg)) {
             finish();
             return ;
         }
@@ -51,7 +51,7 @@ public class SharePreview extends Activity implements OnClickListener {
         mShareView = new ImageView(this);
         mShareView.setScaleType(ScaleType.CENTER_INSIDE);
         ImageCreator creator = new ImageCreator(this);
-        Bitmap bitmap = creator.createWxShareWithQRcodeForHome(scoreImg, qrCodeText);
+        Bitmap bitmap = creator.createWxShareWithQRcodeForHome(shotImg, qrCodeText);
         Log.d(Log.TAG, "bitmap : " + bitmap);
         if (bitmap == null) {
             finish();

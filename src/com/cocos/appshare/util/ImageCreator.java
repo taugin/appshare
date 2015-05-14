@@ -1,5 +1,7 @@
 package com.cocos.appshare.util;
 
+import java.io.InputStream;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,35 +45,26 @@ public class ImageCreator {
     }
 
     public Bitmap createWxShareWithQRcodeForHome(String bgImg, String screenshotImg, String qrText, String logoImg, String footerImg) {
-        Bitmap canvasBmp = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.ARGB_8888);
+        Bitmap canvasBmp = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(canvasBmp);
         Paint paint = new Paint();
         //Xfermode oldXform = paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
         //paint.setAlpha(255);
-        Bitmap bgBmp = null;
-        Bitmap shotImg = null;
-        Bitmap logoBmp = null;
-        Bitmap footerBmp = null;
-        try {
-            bgBmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.share_bg);
-            logoBmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.share_logo);
-            footerBmp = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.share_footer);
-        }catch(Exception e) {
-            Log.d(Log.TAG, "error : " + e);
-        }
 
-        shotImg = BitmapFactory.decodeFile(screenshotImg);
-
+        Bitmap bgBmp = decodeResources(R.drawable.share_bg);
         drawBackground(canvas, bgBmp);
 
+        Bitmap logoBmp = decodeResources(R.drawable.share_logo);
         drawHeader(canvas, logoBmp);
 
+        Bitmap shotImg = BitmapFactory.decodeFile(screenshotImg);
         drawBody(canvas, shotImg, paint);
 
         drawRoundRect(canvas);
 
         drawRQCodeBmp(canvas, qrText);
 
+        Bitmap footerBmp = decodeResources(R.drawable.share_footer);
         drawFooter(canvas, footerBmp);
         return canvasBmp;
     }
@@ -123,6 +116,7 @@ public class ImageCreator {
             canvas.restore();
             shotImg.recycle();
             shotImg = null;
+            System.gc();
         }
     }
 
@@ -160,6 +154,7 @@ public class ImageCreator {
             canvas.restore();
             qrCodeBmp.recycle();
             qrCodeBmp = null;
+            System.gc();
             float x = mScoreRect.left + margin;
             float y = mScoreRect.bottom - dp2px(mContext, 3);
             Paint paint = new Paint();
@@ -194,6 +189,7 @@ public class ImageCreator {
             canvas.restore();
             qrCodeBmp.recycle();
             qrCodeBmp = null;
+            System.gc();
             float x = mScoreRect.left + margin;
             float y = mScoreRect.bottom - dp2px(mContext, 3);
             Paint paint = new Paint();
@@ -223,11 +219,24 @@ public class ImageCreator {
             canvas.restore();
             footerBmp.recycle();
             footerBmp = null;
+            System.gc();
         }
     }
 
     public int dp2px(Context context, float dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dp * scale + 0.5f);
+    }
+
+    private Bitmap decodeResources(int resId) {
+        try {
+            InputStream is = mContext.getResources().openRawResource(resId);
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            is.close();
+            return bitmap;
+        }catch(Exception e) {
+            Log.d(Log.TAG, "error : " + e);
+        }
+        return null;
     }
 }
