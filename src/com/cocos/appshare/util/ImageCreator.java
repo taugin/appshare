@@ -18,10 +18,14 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 import com.cocos.appshare.R;
+import com.cocos.appshare.channel.ChannelConfig;
 
 public class ImageCreator {
 
     private static final int FACTION = 8;
+    private static final String BG_IMAGE = "share_bg.png";
+    private static final String LOGO_IMAGE = "share_logo.png";
+    private static final String FOOTER_IMAGE = "share_footer.png";
     private Context mContext;
     private float margin = 0;
     private int mScreenWidth = 0;
@@ -41,11 +45,16 @@ public class ImageCreator {
         mScreenHeight = metrics.heightPixels;
     }
 
+    public Bitmap createWxShareWithQRcodeForHome(String shotImg) {
+        String qrText = ChannelConfig.getChannelDownloadUrl(mContext);
+        return createWxShareWithQRcodeForHome(BG_IMAGE, shotImg, qrText, LOGO_IMAGE, FOOTER_IMAGE);
+    }
+
     public Bitmap createWxShareWithQRcodeForHome(String shotImg, String qrText) {
-        String bgImg = "share_bg.png";
-        String logoImg = "share_logo.png";
-        String footerImg = "share_footer.png";
-        return createWxShareWithQRcodeForHome(bgImg, shotImg, qrText, logoImg, footerImg);
+        if (TextUtils.isEmpty(qrText)) {
+            qrText = ChannelConfig.getChannelDownloadUrl(mContext);
+        }
+        return createWxShareWithQRcodeForHome(BG_IMAGE, shotImg, qrText, LOGO_IMAGE, FOOTER_IMAGE);
     }
 
     public Bitmap createWxShareWithQRcodeForHome(String bgImg, String screenshotImg, String qrText, String logoImg, String footerImg) {
