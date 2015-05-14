@@ -1,10 +1,10 @@
 package com.cocos.appshare.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,6 +14,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
 import com.cocos.appshare.R;
@@ -61,6 +62,13 @@ public class ImageCreator {
         drawHeader(canvas, logoBmp);
 
         Bitmap shotImg = decodeFile(screenshotImg);
+        if (shotImg != null && !TextUtils.isEmpty(screenshotImg)) {
+            File file = new File(screenshotImg);
+            if (file.exists()) {
+                Log.d(Log.TAG, "Delete shotfile : " + screenshotImg);
+                file.delete();
+            }
+        }
         drawBody(canvas, shotImg, paint);
 
         drawRoundRect(canvas);
