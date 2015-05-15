@@ -52,7 +52,8 @@ public class ShareController {
             }
             is.close();
             if (builder.length() > 0) {
-                InputStream inputStream = new ByteArrayInputStream(builder.toString().getBytes());
+                byte[] decodedString = ChannelConfig.decode(builder.toString());
+                InputStream inputStream = new ByteArrayInputStream(decodedString);
                 return inputStream;
             }
         } catch (IOException e) {
@@ -64,8 +65,10 @@ public class ShareController {
         try {
             InputStream is = mContext.getAssets().open("channelshare.xml");
             // is = decodeString(is);
-            parseXml(is);
-            is.close();
+            if (is != null) {
+                parseXml(is);
+                is.close();
+            }
         } catch (IOException e) {
             Log.d(Log.TAG, "error : " + e);
         }
@@ -123,7 +126,7 @@ public class ShareController {
                 if (item != null) {
                     return item.wxAppId;
                 }
-            } else {
+            }/* else {
                 ChannelItem item = mShareMap.get("000000");
                 if (item != null) {
                     String pkgName = mContext.getPackageName();
@@ -132,7 +135,7 @@ public class ShareController {
                         return item.wxAppId;
                     }
                 }
-            }
+            }*/
         }
         return null;
     }
