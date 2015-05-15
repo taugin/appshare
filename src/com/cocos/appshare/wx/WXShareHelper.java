@@ -12,6 +12,8 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.cocos.appshare.R;
+import com.cocos.appshare.channel.ChannelConfig;
+import com.cocos.appshare.channel.ShareController;
 import com.cocos.appshare.info.ShareInfo;
 import com.cocos.appshare.util.Log;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
@@ -35,12 +37,17 @@ public class WXShareHelper {
     public WXShareHelper(Context context, ShareInfo shareInfo) {
         mContext = context;
         mShareInfo = shareInfo;
-        String appId = APP_ID;
-        if (!TextUtils.isEmpty(shareInfo.mWxAppId)) {
-            appId = shareInfo.mWxAppId;
+        String channel = ChannelConfig.readChannelId(context);
+        String appId = ShareController.get(mContext).getWxAppId(channel);
+        if (TextUtils.isEmpty(appId)) {
+            appId = APP_ID;
         }
         api = WXAPIFactory.createWXAPI(context, appId, true);
         api.registerApp(appId);
+    }
+
+    public boolean wxInstalled() {
+        return api.isWXAppInstalled() && api.isWXAppSupportAPI();
     }
 
     public boolean shareToWechatFriends() {

@@ -1,7 +1,37 @@
 <channelinfo>
-    <item channel="000000" wxappid="wx8b2508265fe571c6" />
-    <item channel="000001" wxappid="wx8b2508265fe571c6" />
-    <item channel="000002" wxappid="wx8cbde386754aba50" />
-    <item channel="000003" wxappid="wx8b2508265fe571c6" />
-    <item channel="000004" wxappid="wx8cbde386754aba50" />
+    <!-- Official -->
+    <item>
+         <channel>000000</channel>
+         <pkgname>com.bhvr.homejam</pkgname>
+         <signmd5>89fe1eb4b706d5d47c6f65d9d7ff1df7</signmd5>
+         <wxappid>wx8b2508265fe571c6</wxappid>
+    </item>
+    <!-- 360 -->
+    <item>
+         <channel>000023</channel>
+         <pkgname>com.bhvr.homejam.qihu</pkgname>
+         <signmd5>89fe1eb4b706d5d47c6f65d9d7ff1df7</signmd5>
+         <wxappid>wx88552219ead6be4e</wxappid>
+    </item>
+    <!-- wandoujia -->
+    <item>
+         <channel>000116</channel>
+         <pkgname>com.bhvr.homejam.wdj</pkgname>
+         <signmd5>89fe1eb4b706d5d47c6f65d9d7ff1df7</signmd5>
+         <wxappid>wx7f16724778d9e557</wxappid>
+    </item>
+    <!-- UC -->
+    <item>
+         <channel>000255</channel>
+         <pkgname>com.bhvr.homejam.uc</pkgname>
+         <signmd5>89fe1eb4b706d5d47c6f65d9d7ff1df7</signmd5>
+         <wxappid>wx47f79a6b09653db3</wxappid>
+    </item>
+    <!-- Anzhi-->
+    <item>
+         <channel>000005</channel>
+         <pkgname>com.bhvr.homejam.anzhi</pkgname>
+         <signmd5>89fe1eb4b706d5d47c6f65d9d7ff1df7</signmd5>
+         <wxappid>wxb7b13c6353a4a8e1</wxappid>
+    </item>
 </channelinfo>
