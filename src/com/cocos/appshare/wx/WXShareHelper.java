@@ -42,6 +42,7 @@ public class WXShareHelper {
         if (TextUtils.isEmpty(appId)) {
             appId = APP_ID;
         }
+        Log.d(Log.TAG, "WxAppId : " + appId);
         api = WXAPIFactory.createWXAPI(context, appId, true);
         api.registerApp(appId);
     }
