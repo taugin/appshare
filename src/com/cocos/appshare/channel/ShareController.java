@@ -34,8 +34,8 @@ public class ShareController {
     public static ShareController get(Context context) {
         if (sShareController == null) {
             sShareController = new ShareController(context);
+            sShareController.init();
         }
-        sShareController.init();
         return sShareController;
     }
 

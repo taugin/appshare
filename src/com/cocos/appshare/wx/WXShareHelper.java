@@ -42,9 +42,15 @@ public class WXShareHelper {
         if (TextUtils.isEmpty(appId)) {
             appId = APP_ID;
         }
-        Log.d(Log.TAG, "WxAppId : " + appId);
+        printInfo(appId, channel);
         api = WXAPIFactory.createWXAPI(context, appId, true);
         api.registerApp(appId);
+    }
+
+    private void printInfo(String appId, String channel) {
+        String signMd5 = ShareController.get(mContext).getSignMd5();
+        String pkgName = mContext.getPackageName();
+        Log.d(Log.TAG, "Share : " + channel + " , " + signMd5 + " , " + appId + " , " + pkgName);
     }
 
     public boolean wxInstalled() {
