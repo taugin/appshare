@@ -25,7 +25,7 @@ public class QRCodeHelper {
     }
 
     public Bitmap createImage(String qrText, int qrWidth, int qrHeight) {
-        Log.i(Log.TAG, "qrText ：" + qrText);
+        Log.i(Log.TAG, "qrText : " + qrText);
         if (TextUtils.isEmpty(qrText)) {
             return null;
         }

@@ -115,11 +115,13 @@ public class WXShareHelper {
         }
         Bitmap bitmap = mShareInfo.mBitmap.get();
         Log.d(Log.TAG, "bitmap = " + bitmap);
-        WXImageObject imgObj = new WXImageObject(scaleBitmapIfneed(bitmap));
+        Bitmap sharedBmp = scaleBitmapIfneed(bitmap);
+
+        WXImageObject imgObj = new WXImageObject(sharedBmp);
         // imgObj.imageData = WXUtil.bmpToByteArray(bitmap, false);
         WXMediaMessage msg = new WXMediaMessage();
         msg.mediaObject = imgObj;
-        msg.thumbData = createThumbData(bitmap);
+        msg.thumbData = createThumbData(sharedBmp);
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = "img" + String.valueOf(System.currentTimeMillis());
         req.message = msg;
@@ -153,6 +155,8 @@ public class WXShareHelper {
     }
 
     private Bitmap scaleBitmapIfneed(Bitmap bitmap) {
+        // Max size of shared picture
+        final long MAX_PIC_BYTES = 6 * 1024 * 1024;
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
         Bitmap.Config config = bitmap.getConfig();
@@ -166,19 +170,29 @@ public class WXShareHelper {
         } else if (config == Bitmap.Config.ARGB_8888) {
             bytePerPixel = 4;
         }
+
+        Log.d(Log.TAG, "bytePerPixel : " + bytePerPixel);
         int byteCount = w * h * bytePerPixel;
-        if (byteCount > 10 * 1024 * 1024) {
-            Log.d(Log.TAG, "bitmap byte greater than 10M");
-            double scalePow = 10 * 1024 * 1024 / (double) byteCount;
+        Log.d(Log.TAG, "OriginByteCount : " + byteCount);
+        if (byteCount > MAX_PIC_BYTES) {
+            Log.d(Log.TAG, "bitmap byte greater than " + MAX_PIC_BYTES);
+            double scalePow = MAX_PIC_BYTES / (double) byteCount;
             float scale = (float) Math.sqrt(scalePow);
             int newW = (int) (w * scale);
             int newH = (int) (h * scale);
-            bitmap = Bitmap.createScaledBitmap(bitmap, newW, newH, false);
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newW, newH, false);
+            bitmap.recycle();
+            bitmap = newBitmap;
         }
+        int newW = bitmap.getWidth();
+        int newH = bitmap.getHeight();
+        Log.d(Log.TAG, "FinalByteCount : " + newW * newH * bytePerPixel);
         return bitmap;
     }
 
     private Bitmap scaleThumbIfneed(Bitmap bitmap) {
+        // Max size of shared thumb
+        final long MAX_THUMB_BYTES = 320 * 1024;
         int w = bitmap.getWidth();
         int h = bitmap.getHeight();
         Bitmap.Config config = bitmap.getConfig();
@@ -192,14 +206,18 @@ public class WXShareHelper {
         } else if (config == Bitmap.Config.ARGB_8888) {
             bytePerPixel = 4;
         }
+        Log.d(Log.TAG, "bytePerPixel : " + bytePerPixel);
         int byteCount = w * h * bytePerPixel;
-        if (byteCount > 320 * 1024) {
+        Log.d(Log.TAG, "byteCount : " + byteCount);
+        if (byteCount > MAX_THUMB_BYTES) {
             Log.d(Log.TAG, "bitmap byte greater than 32K");
-            double scalePow = 320 * 1024 / (double) byteCount;
+            double scalePow = MAX_THUMB_BYTES / (double) byteCount;
             float scale = (float) Math.sqrt(scalePow);
             int newW = (int) (w * scale);
             int newH = (int) (h * scale);
-            bitmap = Bitmap.createScaledBitmap(bitmap, newW, newH, false);
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newW, newH, false);
+            bitmap.recycle();
+            bitmap = newBitmap;
         }
         return bitmap;
     }
