@@ -58,7 +58,7 @@ public class ImageCreator {
     }
 
     public Bitmap createWxShareWithQRcodeForHome(String bgImg, String screenshotImg, String qrText, String logoImg, String footerImg) {
-        Bitmap canvasBmp = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.RGB_565);
+        Bitmap canvasBmp = Bitmap.createBitmap(mScreenWidth, mScreenHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(canvasBmp);
         Paint paint = new Paint();
         //Xfermode oldXform = paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
