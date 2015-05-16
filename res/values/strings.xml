@@ -13,5 +13,6 @@
     <string name="errcode_deny">发送被拒绝</string>
     <string name="errcode_unknown">发送返回</string>
     <string name="longpress_scan">长按扫描二维码下载游戏</string>
-    <string name="wxext">我正在玩疯狂外星人，快来与我一决高下吧， http://home.cocospay.com/</string>
+    <string name="wxext">我正在玩疯狂外星人，快来与我一决高下吧，%1$s </string>
+    <string name="share_activity_notfound">分享失败，未找到应用</string>
 </resources>
