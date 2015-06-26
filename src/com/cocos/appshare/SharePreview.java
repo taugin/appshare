@@ -1,5 +1,8 @@
 package com.cocos.appshare;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 
 import android.app.Activity;
@@ -7,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -86,10 +90,29 @@ public class SharePreview extends Activity implements OnClickListener {
         setContentView(layout, params);
 
         try {
-            MediaPlayer mediaPlay = MediaPlayer.create(this, R.raw.camera_click);
+            InputStream is = getResources().openRawResource(R.raw.camera_click);
+            Log.d(Log.TAG, "is : " + is);
+            String cameraClick = getFilesDir().getAbsolutePath() + File.separator + "camera_click.ogg";
+            if (is != null) {
+                File file = new File(cameraClick);
+                if(file.length() != is.available()) {
+                    FileOutputStream fos = new FileOutputStream(cameraClick);
+                    byte buffer[] = new byte[4096];
+                    int read = 0;
+                    while((read = is.read(buffer)) > 0) {
+                        fos.write(buffer, 0, read);
+                    }
+                    fos.close();
+                }
+                is.close();
+            }
+            MediaPlayer mediaPlay = MediaPlayer.create(this, Uri.parse("file://" + cameraClick));
+            //MediaPlayer mediaPlay = MediaPlayer.create(this, R.raw.camera_click);
+            // mediaPlay.prepare();
             mediaPlay.start();
         }catch(Exception e) {
             Log.d(Log.TAG, "error : " + e);
+            e.printStackTrace();
         }
     }
 

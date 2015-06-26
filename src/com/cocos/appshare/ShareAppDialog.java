@@ -39,6 +39,7 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
     private Context mContext;
     private GridView mGridView;
     private ImageAdapter mImageAdapter;
+    private OnShareAppItemClickListener mOnShareAppItemClickListener;
 
     public ShareAppDialog(Context context, ShareInfo shareInfo) {
         super(context, R.style.translucent);
@@ -48,6 +49,7 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
         mWXShare = new WXShareHelper(getContext(), shareInfo);
         mQQShare = new QQShareHelper(getContext(), shareInfo);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,19 +67,15 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
         Intent intent = null;
         switch (SHARE_ITEM[position][0]) {
         case ID_SHARE_WX_FRIENDS:
-            // MobclickAgent.onEvent(mContext, "ev_share", "wx_friends");
             mWXShare.shareToWechatFriends();
                 break;
         case ID_SHARE_WX_CIRCLE_FRIENDS:
-            // MobclickAgent.onEvent(mContext, "ev_share", "circle_friends");
             mWXShare.shareToWechatCircleFriends();
                 break;
         case ID_SHARE_QQ:
-            // MobclickAgent.onEvent(mContext, "ev_share", "qq");
             mQQShare.shareToQQ();
             break;
         case ID_SHARE_MORE:
-            // MobclickAgent.onEvent(mContext, "ev_share", "other");
             if (mShareInfo.mPicture) {
                 intent = getSharePicIntent();
             } else {
@@ -157,5 +155,13 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
             return convertView;
         }
 
+    }
+
+    public void setOnShareAppItemClickListener(OnShareAppItemClickListener l) {
+        mOnShareAppItemClickListener = l;
+    }
+
+    public interface OnShareAppItemClickListener {
+        public void onShareAppItemClick(String appName, String shareName);
     }
 }
