@@ -34,7 +34,8 @@
         android:id="@+id/share_gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:verticalSpacing="5dp"
+        android:verticalSpacing="2dp"
+        android:listSelector="@null"
         android:numColumns="3"
         />
     </LinearLayout>
