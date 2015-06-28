@@ -33,4 +33,11 @@
     <style name="nonfullscreenactivity_animation">
         <item name="android:windowEnterAnimation">@anim/activity_zoomin</item>
     </style>
+
+    <style name="share_dialog_style" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

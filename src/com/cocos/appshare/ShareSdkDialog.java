@@ -26,6 +26,7 @@ import android.widget.GridView;
 import android.widget.TextView;
 
 import com.cocos.appshare.util.Log;
+import com.cocos.appshare.util.Utils;
 
 public class ShareSdkDialog extends Dialog implements OnItemClickListener {
 
@@ -36,7 +37,7 @@ public class ShareSdkDialog extends Dialog implements OnItemClickListener {
     private OnShareAppItemClickListener mOnShareAppItemClickListener;
 
     public ShareSdkDialog(Context context, Intent shareIntent) {
-        super(context, R.style.translucent);
+        super(context, R.style.share_dialog_style);
         mSendIntent = shareIntent;
         mContext = context;
     }
@@ -47,7 +48,7 @@ public class ShareSdkDialog extends Dialog implements OnItemClickListener {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.share_dlg_layout_gridview);
         mGridView = (GridView) findViewById(R.id.share_gridview);
-        mGridView.setNumColumns(2);
+        mGridView.setNumColumns(Utils.isPad(mContext) ? 4 : 2);
 
         List<ShareClass> list = getAllShareIntent(mSendIntent);
         mImageAdapter = new ImageAdapter(mContext, list);
@@ -58,7 +59,7 @@ public class ShareSdkDialog extends Dialog implements OnItemClickListener {
         LayoutParams lp = dialogWindow.getAttributes();
         DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
         lp.width = (int) (metrics.widthPixels * 0.8f);
-        lp.height = (int) (metrics.heightPixels * 0.8f);
+        //lp.height = (int) (metrics.heightPixels * 0.8f);
         dialogWindow.setAttributes(lp);
     }
 
@@ -103,7 +104,7 @@ public class ShareSdkDialog extends Dialog implements OnItemClickListener {
         ShareClass shareClass = null;
         for (ResolveInfo info : lists) {
             if (info != null && info.activityInfo != null && !TextUtils.isEmpty(info.activityInfo.packageName)) {
-                Log.d(Log.TAG, "info.activityInfo.packageName : " + info.activityInfo.packageName + " , " + info.activityInfo.name);
+                // Log.d(Log.TAG, "info.activityInfo.packageName : " + info.activityInfo.packageName + " , " + info.activityInfo.name);
                 shareClass = new ShareClass();
                 try {
                     String title = info.loadLabel(pm).toString();
@@ -141,9 +142,11 @@ public class ShareSdkDialog extends Dialog implements OnItemClickListener {
                     mSendIntent.setComponent(shareClass.componentName);
                     mContext.startActivity(mSendIntent);
                     if (mOnShareAppItemClickListener != null) {
-                        mOnShareAppItemClickListener.onShareAppItemClick(shareClass.appName, shareClass.shareName);
+                        mOnShareAppItemClickListener.onShareAppItemClick(shareClass.appName + "-" + shareClass.shareName);
                     }
                 } catch(ActivityNotFoundException e) {
+                    Log.d(Log.TAG, "error : " + e);
+                } catch(Exception e) {
                     Log.d(Log.TAG, "error : " + e);
                 }
             }
@@ -163,9 +166,5 @@ public class ShareSdkDialog extends Dialog implements OnItemClickListener {
 
     public void setOnShareAppItemClickListener(OnShareAppItemClickListener l) {
         mOnShareAppItemClickListener = l;
-    }
-
-    public interface OnShareAppItemClickListener {
-        public void onShareAppItemClick(String appName, String shareName);
     }
 }

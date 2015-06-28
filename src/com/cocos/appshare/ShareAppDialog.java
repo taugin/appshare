@@ -68,12 +68,24 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
         switch (SHARE_ITEM[position][0]) {
         case ID_SHARE_WX_FRIENDS:
             mWXShare.shareToWechatFriends();
+            if (mOnShareAppItemClickListener != null) {
+                String text = mContext.getResources().getString(SHARE_ITEM[position][1]);
+                mOnShareAppItemClickListener.onShareAppItemClick(text);
+            }
                 break;
         case ID_SHARE_WX_CIRCLE_FRIENDS:
             mWXShare.shareToWechatCircleFriends();
+            if (mOnShareAppItemClickListener != null) {
+                String text = mContext.getResources().getString(SHARE_ITEM[position][1]);
+                mOnShareAppItemClickListener.onShareAppItemClick(text);
+            }
                 break;
         case ID_SHARE_QQ:
             mQQShare.shareToQQ();
+            if (mOnShareAppItemClickListener != null) {
+                String text = mContext.getResources().getString(SHARE_ITEM[position][1]);
+                mOnShareAppItemClickListener.onShareAppItemClick(text);
+            }
             break;
         case ID_SHARE_MORE:
             if (mShareInfo.mPicture) {
@@ -82,7 +94,10 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
                 intent = getShareIntent();
             }
             if (intent != null) {
-                mContext.startActivity(intent);
+                // mContext.startActivity(intent);
+                ShareSdkDialog dialog = new ShareSdkDialog(mContext, intent);
+                dialog.setOnShareAppItemClickListener(mOnShareAppItemClickListener);
+                dialog.show();
             }
             break;
         }
@@ -98,7 +113,7 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
         intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
         intent.putExtra(Intent.EXTRA_TEXT, extraText);
         Intent shareIntent = Intent.createChooser(intent, title);
-        return shareIntent;
+        return intent;
     }
 
     private Intent getSharePicIntent() {
@@ -114,7 +129,7 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
         intent.putExtra(Intent.EXTRA_SUBJECT, "分享");
         intent.putExtra(Intent.EXTRA_STREAM, uri);
         Intent shareIntent = Intent.createChooser(intent, "分享");
-        return shareIntent;
+        return intent;
     }
 
     private class ImageAdapter extends BaseAdapter {
@@ -159,9 +174,5 @@ public class ShareAppDialog extends Dialog implements OnItemClickListener {
 
     public void setOnShareAppItemClickListener(OnShareAppItemClickListener l) {
         mOnShareAppItemClickListener = l;
-    }
-
-    public interface OnShareAppItemClickListener {
-        public void onShareAppItemClick(String appName, String shareName);
     }
 }
